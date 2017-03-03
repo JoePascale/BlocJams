@@ -28,6 +28,21 @@
      ]
  };
 
+var albumBeethoven = {
+     title: 'Beethoven: Piano Sonatas',
+     artist: 'Ludwig van Beethoven',
+     label: 'Classic',
+     year: '1805',
+     albumArtUrl: 'assets/images/album_covers/Beethoven.jpeg',
+     songs: [
+         { title: 'Socrates', duration: '12:31' },
+         { title: 'Plato', duration: '6:41' },
+         { title: 'Aristotle', duration: '8:26'},
+         { title: 'Da Vinci', duration: '13:14' },
+         { title: 'Kant', duration: '22:15'}
+     ]
+ };
+
  var createSongRow = function(songNumber, songName, songLength) {
      var template =
         '<tr class="album-view-song-item">'
@@ -40,24 +55,20 @@
      return template;
  };
 
+var albumTitle = document.getElementsByClassName('album-view-title')[0];
+var albumArtist = document.getElementsByClassName('album-view-artist')[0];
+var albumReleaseInfo = document.getElementsByClassName('album-view-release-info')[0];
+var albumImage = document.getElementsByClassName('album-cover-art')[0];
+var albumSongList = document.getElementsByClassName('album-view-song-list')[0];
+
  var setCurrentAlbum = function(album) {
-     // #1
-     var albumTitle = document.getElementsByClassName('album-view-title')[0];
-     var albumArtist = document.getElementsByClassName('album-view-artist')[0];
-     var albumReleaseInfo = document.getElementsByClassName('album-view-release-info')[0];
-     var albumImage = document.getElementsByClassName('album-cover-art')[0];
-     var albumSongList = document.getElementsByClassName('album-view-song-list')[0];
- 
-     // #2
      albumTitle.firstChild.nodeValue = album.title;
      albumArtist.firstChild.nodeValue = album.artist;
      albumReleaseInfo.firstChild.nodeValue = album.year + ' ' + album.label;
      albumImage.setAttribute('src', album.albumArtUrl);
  
-     // #3
      albumSongList.innerHTML = '';
  
-     // #4
      for (var i = 0; i < album.songs.length; i++) {
          albumSongList.innerHTML += createSongRow(i + 1, album.songs[i].title, album.songs[i].duration);
      }
@@ -65,4 +76,14 @@
  
  window.onload = function() {
      setCurrentAlbum(albumPicasso);
+     
+     var albums = [albumPicasso, albumMarconi, albumBeethoven];
+     var index = 1;
+     albumImage.addEventListener('click', function(event) {
+        setCurrentAlbum(albums[index])
+        index++;
+         if (index === albums.length) {
+             index = 0;
+         }
+    });
  };
