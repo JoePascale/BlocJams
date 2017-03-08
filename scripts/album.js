@@ -60,9 +60,14 @@
  };
 
 var findParentByClassName = function(element, targetClass) {
-    if (element) {
+    var parentExists = document.getElementByClass("targetClass").parentElement;
+    if ((element && parentExists) && (element.parentElement.className === targetClass)) {
         while (element.parentElement.className !== targetClass && element.parentElement.className !== null) {
             element.parentElement = element.parentElement.parentElement;
+        } else if (element && parentExists) {
+            console.log("No parent found with that class name");
+        } else {
+            console.log("No parent found");
         }
         return element.parentElement;
     }
