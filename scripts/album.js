@@ -59,19 +59,30 @@
      }
  };
 
+//var findParentByClassName = function(element, targetClass) {
+//  if (element) {
+//       var currentParent = element.parentElement;
+//       while (currentParent.className !== targetClass && currentParent.className !== null) {
+//           currentParent = currentParent.parentElement;
+//        }
+//       return currentParent;
+//    }
+//};
+    
 var findParentByClassName = function(element, targetClass) {
-    var parentExists = document.getElementByClass("targetClass").parentElement;
-    if ((element && parentExists) && (element.parentElement.className === targetClass)) {
-        while (element.parentElement.className !== targetClass && element.parentElement.className !== null) {
-            element.parentElement = element.parentElement.parentElement;
-        } else if (element && parentExists) {
+    var currentParent = element.parentElement;
+    if (element && currentParent) {
+        while (currentParent.className !== targetClass && currentParent.className !== null) {
             console.log("No parent found with that class name");
-        } else {
-            console.log("No parent found");
+            currentParent = currentParent.parentElement;    
         }
-        return element.parentElement;
+    } else if (element && (currentParent === false)) {
+        console.log("No parent found");
+    } else {
+        return currentParent;
     }
 };
+    
 
 var getSongItem = function(element) {
     switch (element.className) {
