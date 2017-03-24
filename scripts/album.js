@@ -1,5 +1,11 @@
 //setSong function; assignment 19
 var setSong = function(songNumber) {
+    
+    //check to see if song is still playing and if so, then stop it before playing next
+    if (currentSoundFile) {
+         currentSoundFile.stop();
+     }
+ 
     currentlyPlayingSongNumber = parseInt(songNumber);
     currentSongFromAlbum = currentAlbum.songs[songNumber - 1];
     
@@ -9,7 +15,17 @@ var setSong = function(songNumber) {
          formats: [ 'mp3' ],
          preload: true
      });
+    
+    //call function that sets song volume to current volume variable referenced below
+    setVolume(currentVolume);
 };
+
+//declare function that sets song volume
+var setVolume = function(volume) {
+     if (currentSoundFile) {
+         currentSoundFile.setVolume(volume);
+     }
+ };
 
 //getSongNumberCell function, assignment 19
 var getSongNumberCell = function(number) {
@@ -40,19 +56,26 @@ var createSongRow = function(songNumber, songName, songLength) {
 		  // Switch from Play -> Pause button to indicate new song is playing.
 		  $(this).html(pauseButtonTemplate);
            setSong(songNumber);
-           //***play   currentSoundFile.play();
+           currentSoundFile.play();
            updatePlayerBarSong();
 	   } else if (currentlyPlayingSongNumber === songNumber) {
-		  // Switch from Pause -> Play button to pause currently playing song.
-		  $(this).html(playButtonTemplate);
-           $('.main-controls .play-pause').html(playerBarPlayButton);
-           //***(remove) currentlyPlayingSongNumber = null;
-           //***(remove) currentSongFromAlbum = null;
-           //***(add) if (/*currentSoundFile === paused*/) {
-                    /*start playing song again and revert icon in the song row and the player bar to pause button*/
-                //} else if (/*currentSoundFile !== paused*/) {
-                        /*pause it and set the content of the song number cell and player bar's pause button back to the play button*/
-                    //}
+           
+            //if current song is paused
+           if (currentSoundFile.isPaused()) {
+                    //revert icon in the song row and the player bar to pause button
+                    $(this).html(pauseButtonTemplate);
+                    $('.main-controls .play-pause').html(playerBarPauseButton);
+                    //start playing song again
+                    currentSoundFile.play();
+               
+                //but if it's not paused
+            } else if (currentSoundFile.isPaused === false) {
+                        //set the content of the song number cell and player bar's pause button back to the play button*/
+                        $(this).html(playButtonTemplate);
+                        $('.main-controls .play-pause').html(playerBarPlayButton);
+                        //pause it
+                        currentSoundFile.pause();
+            }
 	   }
     };
      
@@ -114,6 +137,8 @@ var nextSong = function() {
     }
     var lastSongNumber = currentlyPlayingSongNumber;
     setSong(currentSongIndex + 1);
+    //play song when skipping
+    currentSoundFile.play();
     
     updatePlayerBarSong();
 
@@ -132,6 +157,8 @@ var previousSong = function() {
     }
     var lastSongNumber = currentlyPlayingSongNumber;
     setSong(currentSongIndex + 1);
+    //play song when skipping
+    currentSoundFile.play();
     
     updatePlayerBarSong();
     
@@ -162,6 +189,7 @@ var currentAlbum = null;
 var currentlyPlayingSongNumber = null;
 var currentSongFromAlbum = null;
 var currentSoundFile = null;
+var currentVolume = 80;
 
 var $previousButton = $('.main-controls .previous');
 var $nextButton = $('.main-controls .next');
