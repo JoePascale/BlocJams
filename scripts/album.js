@@ -2,6 +2,13 @@
 var setSong = function(songNumber) {
     currentlyPlayingSongNumber = parseInt(songNumber);
     currentSongFromAlbum = currentAlbum.songs[songNumber - 1];
+    
+    //assigns a new Buzz sound object; passes audio file via the audioUrl property on currentSongFromAlbum
+    currentSoundFile = new buzz.sound(currentSongFromAlbum.audioUrl, {
+         //passes in a settings object that has two properties defined, formats and  preload
+         formats: [ 'mp3' ],
+         preload: true
+     });
 };
 
 //getSongNumberCell function, assignment 19
@@ -33,13 +40,19 @@ var createSongRow = function(songNumber, songName, songLength) {
 		  // Switch from Play -> Pause button to indicate new song is playing.
 		  $(this).html(pauseButtonTemplate);
            setSong(songNumber);
+           //***play   currentSoundFile.play();
            updatePlayerBarSong();
 	   } else if (currentlyPlayingSongNumber === songNumber) {
 		  // Switch from Pause -> Play button to pause currently playing song.
 		  $(this).html(playButtonTemplate);
            $('.main-controls .play-pause').html(playerBarPlayButton);
-           currentlyPlayingSongNumber = null;
-           currentSongFromAlbum = null;
+           //***(remove) currentlyPlayingSongNumber = null;
+           //***(remove) currentSongFromAlbum = null;
+           //***(add) if (/*currentSoundFile === paused*/) {
+                    /*start playing song again and revert icon in the song row and the player bar to pause button*/
+                //} else if (/*currentSoundFile !== paused*/) {
+                        /*pause it and set the content of the song number cell and player bar's pause button back to the play button*/
+                    //}
 	   }
     };
      
@@ -100,7 +113,7 @@ var nextSong = function() {
         currentSongIndex = 0;
     }
     var lastSongNumber = currentlyPlayingSongNumber;
-    setSong(songNumber);
+    setSong(currentSongIndex + 1);
     
     updatePlayerBarSong();
 
@@ -118,7 +131,7 @@ var previousSong = function() {
         currentSongIndex = currentAlbum.songs.length - 1;
     }
     var lastSongNumber = currentlyPlayingSongNumber;
-    setSong(songNumber);
+    setSong(currentSongIndex + 1);
     
     updatePlayerBarSong();
     
@@ -148,6 +161,7 @@ var playerBarPauseButton = '<span class="ion-pause"></span>';
 var currentAlbum = null;
 var currentlyPlayingSongNumber = null;
 var currentSongFromAlbum = null;
+var currentSoundFile = null;
 
 var $previousButton = $('.main-controls .previous');
 var $nextButton = $('.main-controls .next');
