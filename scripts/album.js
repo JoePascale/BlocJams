@@ -48,6 +48,9 @@ var createSongRow = function(songNumber, songName, songLength) {
     ;
  
     var $row = $(template);
+    
+    //assignment 21 - wrap songLength in filterTimeCode()
+    filterTimeCode(songLength);
      
     var clickHandler = function() {
 	   var songNumber = parseInt($(this).attr('data-song-number'));
@@ -58,6 +61,8 @@ var createSongRow = function(songNumber, songName, songLength) {
 		  var currentlyPlayingCell = getSongNumberCell(currentlyPlayingSongNumber);
 		  currentlyPlayingCell.html(currentlyPlayingSongNumber);
 	   }
+        
+        
 	   if (currentlyPlayingSongNumber !== songNumber) {
             // Switch from Play -> Pause button to indicate new song is playing.
             $(this).html(pauseButtonTemplate);
@@ -83,8 +88,8 @@ var createSongRow = function(songNumber, songName, songLength) {
                     updateSeekBarWhileSongPlays();
                
             //but if it's not paused
-            } else if (currentSoundFile.isPaused === false) {
-                        //set the content of the song number cell and player bar's pause button back to the play button*/
+            } else if (currentSoundFile.isPaused() === false) {
+                        //set the content of the song number cell and player bar's pause button back to the play button
                         $(this).html(playButtonTemplate);
                         $('.main-controls .play-pause').html(playerBarPlayButton);
                         //pause it
@@ -148,8 +153,11 @@ var updateSeekBarWhileSongPlays = function() {
             var $seekBar = $('.seek-control .seek-bar');
 
             updateSeekPercentage($seekBar, seekBarFillRatio);
+            
+            setCurrentTimeInPlayerBar(this.getTime());
         });
     }
+    
 };
 
 var updateSeekPercentage = function($seekBar, seekBarFillRatio) {
@@ -264,7 +272,38 @@ var updatePlayerBarSong = function() {
     $('.currently-playing .artist-name').text(currentAlbum.artist);
     $('.currently-playing .artist-song-mobile').text(currentSongFromAlbum.title + " - " + currentAlbum.artist);
     $('.main-controls .play-pause').html(playerBarPauseButton);
+    
+    setTotalTimeInPlayerBar("songLength");
+    
+};
 
+//assignment 21 - create setCurrentTimeInPlayerBar()
+var setCurrentTimeInPlayerBar = function(currentTime) {
+    filterTimeCode(currentTime);
+    $('.current-time').text(currentTime);
+};
+
+//assignment 21 - create setTotalTimeInPlayerBar()
+var setTotalTimeInPlayerBar = function(totalTime) {
+    filterTimeCode(totalTime);
+    $('.total-time').text(totalTime);
+};
+
+//assignment 21 - create filterTimeCode()
+var filterTimeCode = function(timeInSeconds) {
+    //use parseFloat() to get seconds in number form
+    var secondCount = parseFloat(timeInSeconds);
+    
+    //store variables for whole seconds and whole minutes
+    var wholeMinutes = Math.floor(secondCount/60);
+    var wholeSeconds = secondCount % 60; 
+    
+    if (wholeSeconds.length = 1) {
+        wholeSeconds = "0" + wholeSeconds;
+    }
+    
+    //return time in the format X:XX
+    return wholeMinutes + ":" + wholeSeconds;
 };
 
 var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>';
