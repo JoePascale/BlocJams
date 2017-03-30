@@ -43,14 +43,11 @@ var createSongRow = function(songNumber, songName, songLength) {
     '<tr class="album-view-song-item">'
     + '  <td class="song-item-number" data-song-number="' + songNumber + '">' + songNumber + '</td>'
     + '  <td class="song-item-title">' + songName + '</td>'
-    + '  <td class="song-item-duration">' + songLength + '</td>'
+    + '  <td class="song-item-duration">' + filterTimeCode(songLength) + '</td>'
     + '</tr>'
     ;
  
     var $row = $(template);
-    
-    //assignment 21 - wrap songLength in filterTimeCode()
-    filterTimeCode(songLength);
      
     var clickHandler = function() {
 	   var songNumber = parseInt($(this).attr('data-song-number'));
@@ -155,6 +152,8 @@ var updateSeekBarWhileSongPlays = function() {
             updateSeekPercentage($seekBar, seekBarFillRatio);
             
             setCurrentTimeInPlayerBar(this.getTime());
+            
+            setTotalTimeInPlayerBar(this.getDuration());
         });
     }
     
@@ -273,32 +272,33 @@ var updatePlayerBarSong = function() {
     $('.currently-playing .artist-song-mobile').text(currentSongFromAlbum.title + " - " + currentAlbum.artist);
     $('.main-controls .play-pause').html(playerBarPauseButton);
     
-    setTotalTimeInPlayerBar("songLength");
     
 };
 
 //assignment 21 - create setCurrentTimeInPlayerBar()
 var setCurrentTimeInPlayerBar = function(currentTime) {
     filterTimeCode(currentTime);
-    $('.current-time').text(currentTime);
+    $('.current-time').text(filterTimeCode(currentTime));
 };
 
 //assignment 21 - create setTotalTimeInPlayerBar()
 var setTotalTimeInPlayerBar = function(totalTime) {
     filterTimeCode(totalTime);
-    $('.total-time').text(totalTime);
+    $('.total-time').text(filterTimeCode(totalTime));
 };
 
 //assignment 21 - create filterTimeCode()
 var filterTimeCode = function(timeInSeconds) {
+
+    
     //use parseFloat() to get seconds in number form
-    var secondCount = parseFloat(timeInSeconds);
+    var secondCount = Math.round(timeInSeconds);
     
     //store variables for whole seconds and whole minutes
     var wholeMinutes = Math.floor(secondCount/60);
     var wholeSeconds = secondCount % 60; 
     
-    if (wholeSeconds.length = 1) {
+    if (wholeSeconds.toString().length === 1) {
         wholeSeconds = "0" + wholeSeconds;
     }
     
